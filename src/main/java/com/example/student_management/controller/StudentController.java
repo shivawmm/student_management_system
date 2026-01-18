@@ -7,6 +7,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
+@Tag(name = "Student API", description = "CRUD operations for Student Management")
 @RestController
 @RequestMapping("/students")
 public class StudentController {
@@ -18,11 +22,13 @@ public class StudentController {
     }
 
     // ================= POST =================
+    @Operation(summary = "Create a new student")
     @PostMapping
     public Student createStudent(@RequestBody Student student) {
         return repository.save(student);
     }
 
+    @Operation(summary = "Create multiple students")
     @PostMapping("/bulk")
     public List<Student> createStudents(@RequestBody List<Student> students) {
         return repository.saveAll(students);
@@ -30,12 +36,14 @@ public class StudentController {
 
 
     // ================= GET ALL =================
+    @Operation(summary = "Get all students")
     @GetMapping
     public List<Student> getAllStudents() {
         return repository.findAll();
     }
 
     // ================= GET BY ID =================
+    @Operation(summary = "Get student by ID")
     @GetMapping("/{id}")
     public ResponseEntity<Student> getStudentById(@PathVariable Long id) {
         return repository.findById(id)
@@ -44,6 +52,7 @@ public class StudentController {
     }
 
     // ================= PUT =================
+    @Operation(summary = "Update student by ID")
     @PutMapping("/{id}")
     public ResponseEntity<Student> updateStudent(
             @PathVariable Long id,
@@ -60,6 +69,7 @@ public class StudentController {
     }
 
     // ================= DELETE =================
+    @Operation(summary = "Delete student by ID")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteStudent(@PathVariable Long id) {
         if (repository.existsById(id)) {
