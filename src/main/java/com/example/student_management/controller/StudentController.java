@@ -1,5 +1,6 @@
 package com.example.student_management.controller;
 
+import com.example.student_management.dto.StudentBulkRequestDTO;
 import com.example.student_management.dto.StudentRequestDTO;
 import com.example.student_management.dto.StudentResponseDTO;
 import com.example.student_management.entity.Student;
@@ -13,6 +14,7 @@ import java.util.stream.Collectors;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 
 @Tag(name = "Student API", description = "CRUD operations for Student Management")
 @RestController
@@ -37,18 +39,19 @@ public class StudentController {
     @Operation(summary = "Create multiple students")
     @PostMapping("/bulk")
     public List<StudentResponseDTO> createStudentsBulk(
-            @RequestBody List<StudentRequestDTO> studentsDto) {
-
-        List<Student> students = studentsDto.stream()
+            @Valid @RequestBody StudentBulkRequestDTO bulkRequest) {
+            
+        List<Student> students = bulkRequest.getStudents().stream()
                 .map(StudentMapper::toEntity)
                 .toList();
-
-        List<Student> savedStudents = repository.saveAll(students);
-
-        return savedStudents.stream()
+            
+        List<Student> saved = repository.saveAll(students);
+            
+        return saved.stream()
                 .map(StudentMapper::toDTO)
                 .toList();
     }
+
 
     // ================= GET ALL =================
     @Operation(summary = "Get all students")
